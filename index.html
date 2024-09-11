@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luca Newsletter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="background"></div>
+    <div id="container">
+        <div id="languageToggle">
+            <button id="enButton" class="languageButton activeLanguageButton">EN</button>
+            <button id="ptButton" class="languageButton">PT</button>
+        </div>
+        <h1 id="title">Luca Newsletter</h1>
+        <div id="formsContainer">
+            <div class="formSection">
+                <h2 id="subscribeTitle">Subscribe</h2>
+                <form id="subscribeForm" action="https://formsubmit.co/YOUR_EMAIL" method="POST">
+                    <input type="hidden" name="_subject" value="New Subscription to Luca Newsletter!" />
+                    <input type="email" name="email" id="subscribeEmail" required>
+                    <input type="hidden" name="_captcha" value="false" />
+                    <button type="submit" id="subscribeButton" class="submitButton"></button>
+                </form>
+            </div>
+            <div class="formSection">
+                <h2 id="unsubscribeTitle">Unsubscribe</h2>
+                <form id="unsubscribeForm" action="https://formsubmit.co/YOUR_EMAIL" method="POST">
+                    <input type="hidden" name="_subject" value="Unsubscribe Request for Luca Newsletter" />
+                    <input type="email" name="email" id="unsubscribeEmail" required>
+                    <input type="hidden" name="_captcha" value="false" />
+                    <button type="submit" id="unsubscribeButton" class="submitButton"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
