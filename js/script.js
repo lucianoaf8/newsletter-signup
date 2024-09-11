@@ -128,4 +128,48 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => console.error('Error loading content:', error));
     }
+
+    // Add this function to handle form submissions
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const action = form.getAttribute('action');
+        const formData = new FormData(form);
+
+        fetch(action, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                if (action.includes('subscribe')) {
+                    window.location.href = '/subscribe-success.html';
+                } else if (action.includes('unsubscribe')) {
+                    window.location.href = '/unsubscribe-success.html';
+                }
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+
+    // Add event listeners to forms
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', handleFormSubmit);
+    });
+
+    // Add translations for success pages
+    translations.en.subscribeSuccessTitle = 'Subscription Successful!';
+    translations.en.subscribeSuccessMessage = 'Thank you for joining the Luca Newsletter!';
+    translations.en.unsubscribeSuccessTitle = 'Unsubscribe Successful';
+    translations.en.unsubscribeSuccessMessage = 'We\'re sorry to see you go!';
+
+    translations.pt.subscribeSuccessTitle = 'Inscrição bem-sucedida!';
+    translations.pt.subscribeSuccessMessage = 'Obrigado por se juntar ao Boletim Luca!';
+    translations.pt.unsubscribeSuccessTitle = 'Cancelamento de inscrição bem-sucedido';
+    translations.pt.unsubscribeSuccessMessage = 'Lamentamos vê-lo partir!';
+
+
 });
