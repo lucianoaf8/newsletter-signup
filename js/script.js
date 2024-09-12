@@ -139,12 +139,17 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Add this function to handle form submissions
     function handleFormSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const action = form.getAttribute('action');
-        const formData = new FormData(form);
+        event.preventDefault();  // Prevent the default form submission
+        const form = event.target;  // The form that was submitted
+        const action = form.getAttribute('action');  // Form action URL
+        const formData = new FormData(form);  // Collect form data
+    
+        const submitButton = form.querySelector('button[type="submit"]');  // The submit button
+    
+        // Disable the submit button and update its text
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...';
     
         fetch(action, {
             method: 'POST',
@@ -156,15 +161,24 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Load success page based on the form type
                 const successPage = form.id === 'subscribeForm' ? 'subscribe-success' : 'unsubscribe-success';
                 window.location.href = `/${successPage}.html`;
+            } else {
+                throw new Error('Form submission failed');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Form submission failed. Please try again.');
+            alert('An error occurred. Please try again.');
+        })
+        .finally(() => {
+            // Re-enable the submit button and reset its text after the submission is complete
+            submitButton.disabled = false;
+            submitButton.textContent = form.id === 'subscribeForm' ? 'Join the Future' : 'Leave the Network';
         });
     }
+    
     
 
     // Add event listeners to forms
