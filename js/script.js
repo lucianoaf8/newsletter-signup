@@ -27,7 +27,27 @@ document.addEventListener('DOMContentLoaded', function() {
             dailyChallengeDesc: 'Push yourself with a new personal growth challenge each day.',
             subscribeNow: 'Subscribe Now',
             unsubscribe: 'Unsubscribe',
-            backToHome: 'Back to Home'
+            backToHome: 'Back to Home',
+            editPreferencesTitle: 'Edit Newsletter Preferences',
+            newsletterSections: 'Newsletter Sections',
+            deliveryDays: 'Delivery Days',
+            monday: 'Monday',
+            tuesday: 'Tuesday',
+            wednesday: 'Wednesday',
+            thursday: 'Thursday',
+            friday: 'Friday',
+            saturday: 'Saturday',
+            sunday: 'Sunday',
+            interests: 'Interests',
+            interest1Placeholder: 'Interest 1',
+            interest2Placeholder: 'Interest 2',
+            interest3Placeholder: 'Interest 3',
+            language: 'Language',
+            languageEnglish: 'English',
+            languagePortuguese: 'Portuguese',
+            languageBoth: 'Both',
+            savePreferences: 'Save Preferences',
+            editPreferences: 'Edit Preferences'
         },
         pt: {
             title: 'Boletim Luca',
@@ -56,7 +76,27 @@ document.addEventListener('DOMContentLoaded', function() {
             dailyChallengeDesc: 'Desafie-se com um novo desafio de crescimento pessoal a cada dia.',
             subscribeNow: 'Inscreva-se Agora',
             unsubscribe: 'Cancelar Inscrição',
-            backToHome: 'Voltar para a Página Inicial'
+            backToHome: 'Voltar para a Página Inicial',
+            editPreferencesTitle: 'Editar Preferências da Newsletter',
+            newsletterSections: 'Seções da Newsletter',
+            deliveryDays: 'Dias de Entrega',
+            monday: 'Segunda-feira',
+            tuesday: 'Terça-feira',
+            wednesday: 'Quarta-feira',
+            thursday: 'Quinta-feira',
+            friday: 'Sexta-feira',
+            saturday: 'Sábado',
+            sunday: 'Domingo',
+            interests: 'Interesses',
+            interest1Placeholder: 'Interesse 1',
+            interest2Placeholder: 'Interesse 2',
+            interest3Placeholder: 'Interesse 3',
+            language: 'Idioma',
+            languageEnglish: 'Inglês',
+            languagePortuguese: 'Português',
+            languageBoth: 'Ambos',
+            savePreferences: 'Salvar Preferências',
+            editPreferences: 'Editar Preferências'
         }
     };
 
@@ -140,62 +180,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleFormSubmit(event) {
-        event.preventDefault();  // Prevent the default form submission
+        event.preventDefault();
         const form = event.target;
         const action = form.getAttribute('action');
         const formData = new FormData(form);
         const submitButton = form.querySelector('button[type="submit"]');
         
-        // Disable the submit button and show a loading message
         submitButton.disabled = true;
         submitButton.textContent = 'Submitting...';
         
-        // Optionally, display a loading spinner/message to show progress
         const loadingMessage = document.createElement('p');
         loadingMessage.id = 'loadingMessage';
         loadingMessage.textContent = 'Please wait while we process your request...';
         form.appendChild(loadingMessage);
     
-        fetch(action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const successPage = form.id === 'subscribeForm' ? 'subscribe-success' : 'unsubscribe-success';
-                window.location.href = `/${successPage}.html`;
-            } else {
-                throw new Error('Form submission failed');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-        })
-        .finally(() => {
-            // Re-enable the submit button and reset its text after the submission is complete
+        // Simulate form submission (replace with actual API call)
+        setTimeout(() => {
             submitButton.disabled = false;
-            submitButton.textContent = form.id === 'subscribeForm' ? 'Join the Future' : 'Leave the Network';
+            submitButton.textContent = form.id === 'subscribeForm' ? 'Join the Future' : 
+                                       form.id === 'unsubscribeForm' ? 'Leave the Network' : 'Save Preferences';
             
-            // Remove the loading message when the process is done
-            const loadingMessage = document.getElementById('loadingMessage');
-            if (loadingMessage) {
-                loadingMessage.remove();
-            }
-        });
+            loadingMessage.remove();
+            
+            // Show success message
+            const successMessage = document.createElement('p');
+            successMessage.id = 'successMessage';
+            successMessage.textContent = form.id === 'preferencesForm' ? 'Preferences saved successfully!' : 'Form submitted successfully!';
+            form.appendChild(successMessage);
+            
+            // Remove success message after 3 seconds
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        }, 2000);
     }
-    
     
 
     // Add event listeners to forms
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', handleFormSubmit);
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', handleFormSubmit);
+        });
     });
-
+    
     // Add translations for success pages
     translations.en.subscribeSuccessTitle = 'Subscription Successful!';
     translations.en.subscribeSuccessMessage = 'Thank you for joining the Luca Newsletter!';
