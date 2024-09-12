@@ -114,19 +114,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('content').innerHTML = html;
                 setLanguage(currentLanguage);
                 
-                // Add styles for the "Back to Home" button
-                const style = document.createElement('style');
-                style.textContent = `
-                    .cta-home {
-                        display: inline-block;
-                        margin-top: 20px;
-                        background-color: #00f7ff;
-                        color: #0a0a2a;
+                if (page === 'subscribe-success' || page === 'unsubscribe-success') {
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    if (successMessage) successMessage.style.display = 'block';
+                    
+                    // Show fireworks or sad face
+                    if (page === 'subscribe-success') {
+                        const fireworks = document.getElementById('fireworks');
+                        if (fireworks) fireworks.style.display = 'block';
+                    } else {
+                        const sadFace = document.getElementById('sadFace');
+                        if (sadFace) sadFace.style.display = 'block';
                     }
-                `;
-                document.head.appendChild(style);
+                }
+    
+                // Update the URL without reloading the page
+                history.pushState(null, '', '/' + page);
             })
-            .catch(error => console.error('Error loading content:', error));
+            .catch(error => {
+                console.error('Error loading content:', error);
+                // If content fails to load, redirect to the page instead
+                window.location.href = '/' + page + '.html';
+            });
     }
 
     // Add this function to handle form submissions
@@ -135,25 +145,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = event.target;
         const action = form.getAttribute('action');
         const formData = new FormData(form);
-
+    
         fetch(action, {
             method: 'POST',
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                if (action.includes('subscribe')) {
-                    window.location.href = '/subscribe-success.html';
-                } else if (action.includes('unsubscribe')) {
-                    window.location.href = '/unsubscribe-success.html';
-                }
-            } else {
-                alert('An error occurred. Please try again.');
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
             }
-        }).catch(error => {
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const successPage = form.id === 'subscribeForm' ? 'subscribe-success' : 'unsubscribe-success';
+                window.location.href = `/${successPage}.html`;
+            }
+        })
+        .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            alert('Form submission failed. Please try again.');
         });
     }
+    
 
     // Add event listeners to forms
     document.querySelectorAll('form').forEach(form => {

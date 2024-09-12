@@ -122,5 +122,14 @@
     </div>
     <script src="js/redirect.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const page = sessionStorage.getItem('page');
+          if (page === 'subscribe' || page === 'unsubscribe') {
+            loadContent(page + '-success');
+            sessionStorage.removeItem('page');
+          }
+        });
+      </script>
 </body>
 </html>
