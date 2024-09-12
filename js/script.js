@@ -141,15 +141,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleFormSubmit(event) {
         event.preventDefault();  // Prevent the default form submission
-        const form = event.target;  // The form that was submitted
-        const action = form.getAttribute('action');  // Form action URL
-        const formData = new FormData(form);  // Collect form data
-    
-        const submitButton = form.querySelector('button[type="submit"]');  // The submit button
-    
-        // Disable the submit button and update its text
+        const form = event.target;
+        const action = form.getAttribute('action');
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        
+        // Disable the submit button and show a loading message
         submitButton.disabled = true;
         submitButton.textContent = 'Submitting...';
+        
+        // Optionally, display a loading spinner/message to show progress
+        const loadingMessage = document.createElement('p');
+        loadingMessage.id = 'loadingMessage';
+        loadingMessage.textContent = 'Please wait while we process your request...';
+        form.appendChild(loadingMessage);
     
         fetch(action, {
             method: 'POST',
@@ -161,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Load success page based on the form type
                 const successPage = form.id === 'subscribeForm' ? 'subscribe-success' : 'unsubscribe-success';
                 window.location.href = `/${successPage}.html`;
             } else {
@@ -176,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Re-enable the submit button and reset its text after the submission is complete
             submitButton.disabled = false;
             submitButton.textContent = form.id === 'subscribeForm' ? 'Join the Future' : 'Leave the Network';
+            
+            // Remove the loading message when the process is done
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
         });
     }
     
