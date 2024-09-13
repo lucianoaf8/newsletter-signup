@@ -1,7 +1,7 @@
 <template>
   <div class="edit-preferences">
     <h2 class="title">{{ $t('editPreferencesTitle') }}</h2>
-    <<form id="editPreferencesForm" action="https://formsubmit.co/your-formsubmit-id" method="POST" @submit.prevent="savePreferences" class="preferences-form">
+    <<form id="editPreferencesForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="savePreferences" class="preferences-form">
       <input type="hidden" name="_subject" value="Edit Preferences Request" />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />

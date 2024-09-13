@@ -7,6 +7,7 @@ import SubmitRequest from './views/SubmitRequest.vue'
 import EditPreferences from './views/EditPreferences.vue'
 import SubscribeSuccess from './views/SubscribeSuccess.vue'
 import UnsubscribeSuccess from './views/UnsubscribeSuccess.vue'
+import SuccessPage from './views/SuccessPage.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/edit-preferences', component: EditPreferences },
   { path: '/subscribe-success', component: SubscribeSuccess },
   { path: '/unsubscribe-success', component: UnsubscribeSuccess },  
+  { path: '/success-page', component: SuccessPage },  
 ]
 
 const router = createRouter({

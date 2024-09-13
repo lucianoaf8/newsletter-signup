@@ -1,7 +1,7 @@
 <template>
   <div class="submit-error">
     <h2 class="title">{{ $t('submitErrorTitle') }}</h2>
-    <form id="submitErrorForm" action="https://formsubmit.co/your-formsubmit-id" method="POST" @submit.prevent="handleSubmit" class="error-form">
+    <form id="submitErrorForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="handleSubmit" class="error-form">
       <input type="hidden" name="_subject" value="New Error Submission" />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
@@ -20,18 +20,30 @@ export default {
   name: 'SubmitError',
   data() {
     return {
-      subject: '',
-      description: ''
-    }
+      email: '',
+      // Correct the success URL to include the hash for Vue Router hash mode
+      successUrl: `${window.location.origin}/#/success-page`,
+      isSubmitting: false,
+    };
   },
   methods: {
-    handleSubmit() {
-      console.log('Error submitted:', this.subject, this.description);
-      this.$router.push('/');
-    }
-  }
-}
+    handleSubscribe() {
+      this.isSubmitting = true;
+
+      // Submit the form to FormSubmit
+      const form = document.getElementById('submitErrorForm');
+      form.submit(); // FormSubmit will handle the redirection to the _next URL
+    },
+  },
+};
 </script>
+
+<style scoped>
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+</style>
 
 <style scoped>
 .submit-error {
