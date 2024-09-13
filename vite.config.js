@@ -1,8 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  base: 'https://signup.luca137.com/',
+  base: './', // This will generate relative paths in the built index.html
 })

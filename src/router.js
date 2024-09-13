@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from './views/Home.vue'
 import Subscribe from './views/Subscribe.vue'
 import Unsubscribe from './views/Unsubscribe.vue'
@@ -16,11 +16,11 @@ const routes = [
   { path: '/submit-request', component: SubmitRequest },
   { path: '/edit-preferences', component: EditPreferences },
   { path: '/subscribe-success', component: SubscribeSuccess },
-  { path: '/unsubscribe-success', component: UnsubscribeSuccess },
+  { path: '/unsubscribe-success', component: UnsubscribeSuccess },  
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 })
 
