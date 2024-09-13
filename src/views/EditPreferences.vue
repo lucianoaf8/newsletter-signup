@@ -14,7 +14,7 @@
         <div class="preferences-grid">
           <div v-for="section in sections" :key="section" class="preference-option">
             <label>
-              <input type="checkbox" name="sections" v-model="preferences.sections[section]" class="neon-checkbox">
+              <input type="checkbox" v-model="preferences.sections[section]" class="neon-checkbox">
               <span class="label-text">{{ $t(section) }}</span>
             </label>
           </div>
@@ -27,7 +27,7 @@
         <div class="preferences-grid">
           <div v-for="day in days" :key="day" class="preference-option">
             <label>
-              <input type="checkbox" name="weekDays" v-model="preferences.days[day]" class="neon-checkbox">
+              <input type="checkbox" v-model="preferences.days[day]" class="neon-checkbox">
               <span class="label-text">{{ $t(day) }}</span>
             </label>
           </div>
@@ -38,16 +38,16 @@
       <div class="preference-card">
         <h3>{{ $t('interests') }}</h3>
         <div class="interest-inputs">
-          <input type="text" name="interest1" v-model="preferences.interests[0]" :placeholder="$t('interest1Placeholder')" class="neon-input">
-          <input type="text" name="interest2" v-model="preferences.interests[1]" :placeholder="$t('interest2Placeholder')" class="neon-input">
-          <input type="text" name="interest3" v-model="preferences.interests[2]" :placeholder="$t('interest3Placeholder')" class="neon-input">
+          <input type="text" v-model="preferences.interests[0]" :placeholder="$t('interest1Placeholder')" class="neon-input">
+          <input type="text" v-model="preferences.interests[1]" :placeholder="$t('interest2Placeholder')" class="neon-input">
+          <input type="text" v-model="preferences.interests[2]" :placeholder="$t('interest3Placeholder')" class="neon-input">
         </div>
       </div>
 
       <!-- Language -->
       <div class="preference-card">
         <h3>{{ $t('language') }}</h3>
-        <select name="languages" v-model="preferences.language" class="neon-select">
+        <select v-model="preferences.language" class="neon-select">
           <option value="en">{{ $t('languageEnglish') }}</option>
           <option value="pt">{{ $t('languagePortuguese') }}</option>
           <option value="both">{{ $t('languageBoth') }}</option>
