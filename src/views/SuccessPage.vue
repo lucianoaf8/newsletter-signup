@@ -99,6 +99,7 @@
     font-size: 3.5rem;
     margin-bottom: 20px;
     background: linear-gradient(45deg, #00f7ff, #ff00e6);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

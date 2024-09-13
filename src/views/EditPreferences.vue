@@ -1,11 +1,12 @@
 <template>
   <div class="edit-preferences">
     <h2 class="title">{{ $t('editPreferencesTitle') }}</h2>
-    <<form id="editPreferencesForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="savePreferences" class="preferences-form">
+    <form id="editPreferencesForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="handleSubmit" class="preferences-form">
       <input type="hidden" name="_subject" value="Edit Preferences Request" />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_next" :value="successUrl" />
+      <input type="email" id="subscribeEmail" name="email" required :placeholder="$t('subscribePlaceholder')" />
       
       <!-- Newsletter Sections -->
       <div class="preference-card">
@@ -13,7 +14,7 @@
         <div class="preferences-grid">
           <div v-for="section in sections" :key="section" class="preference-option">
             <label>
-              <input type="checkbox" v-model="preferences.sections[section]" class="neon-checkbox">
+              <input type="checkbox" name="sections" v-model="preferences.sections[section]" class="neon-checkbox">
               <span class="label-text">{{ $t(section) }}</span>
             </label>
           </div>
@@ -26,7 +27,7 @@
         <div class="preferences-grid">
           <div v-for="day in days" :key="day" class="preference-option">
             <label>
-              <input type="checkbox" v-model="preferences.days[day]" class="neon-checkbox">
+              <input type="checkbox" name="weekDays" v-model="preferences.days[day]" class="neon-checkbox">
               <span class="label-text">{{ $t(day) }}</span>
             </label>
           </div>
@@ -37,16 +38,16 @@
       <div class="preference-card">
         <h3>{{ $t('interests') }}</h3>
         <div class="interest-inputs">
-          <input type="text" v-model="preferences.interests[0]" :placeholder="$t('interest1Placeholder')" class="neon-input">
-          <input type="text" v-model="preferences.interests[1]" :placeholder="$t('interest2Placeholder')" class="neon-input">
-          <input type="text" v-model="preferences.interests[2]" :placeholder="$t('interest3Placeholder')" class="neon-input">
+          <input type="text" name="interest1" v-model="preferences.interests[0]" :placeholder="$t('interest1Placeholder')" class="neon-input">
+          <input type="text" name="interest2" v-model="preferences.interests[1]" :placeholder="$t('interest2Placeholder')" class="neon-input">
+          <input type="text" name="interest3" v-model="preferences.interests[2]" :placeholder="$t('interest3Placeholder')" class="neon-input">
         </div>
       </div>
 
       <!-- Language -->
       <div class="preference-card">
         <h3>{{ $t('language') }}</h3>
-        <select v-model="preferences.language" class="neon-select">
+        <select name="languages" v-model="preferences.language" class="neon-select">
           <option value="en">{{ $t('languageEnglish') }}</option>
           <option value="pt">{{ $t('languagePortuguese') }}</option>
           <option value="both">{{ $t('languageBoth') }}</option>
@@ -59,7 +60,9 @@
       <input type="hidden" name="language" :value="preferences.language" />
 
       <!-- Submit Button -->
-      <button type="submit" class="submit-button neon-button">{{ $t('savePreferences') }}</button>
+      <button type="submit" class="submit-button neon-button" :disabled="isSubmitting">
+        {{ isSubmitting ? $t('submitting') : $t('savePreferences') }}
+      </button>
     </form>
 
     <router-link to="/" class="cta-button neon-cta">{{ $t('backToHome') }}</router-link>
@@ -77,18 +80,30 @@ export default {
         sections: {},
         days: {},
         interests: ['', '', ''],
-        language: 'en'
-      }
+        language: 'en',
+        
+      },
+      successUrl: `${window.location.origin}/#/success-page`,
+      isSubmitting: false,
     }
   },
   methods: {
-    savePreferences() {
-      console.log('Preferences saved:', this.preferences);
-      this.$router.push('/');
-    }
-  }
+    handleSubmit() {
+      this.isSubmitting = true;
+      const form = document.getElementById('editPreferencesForm');
+      form.submit();
+    },
+  },
 }
 </script>
+
+<style scoped>
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+</style>
+
 
 <style scoped>
 .edit-preferences {
@@ -108,6 +123,7 @@ export default {
   text-align: center;
   margin-bottom: 30px;
   background: linear-gradient(45deg, #00f7ff, #ff00e6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

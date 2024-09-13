@@ -6,11 +6,13 @@
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_next" :value="successUrl" />
-      <input type="hidden" name="subject" :value="subject" />
-      <input type="hidden" name="description" :value="description" />
-      <input type="text" :placeholder="$t('subjectPlaceholder')" v-model="subject" required class="neon-input">
-      <textarea :placeholder="$t('requestDescriptionPlaceholder')" v-model="description" required class="neon-textarea"></textarea>
-      <button type="submit" class="submit-button neon-button">{{ $t('submitRequest') }}</button>
+      <input type="email" id="subscribeEmail" name="email" required :placeholder="$t('subscribePlaceholder')" />
+      <input type="text" name="requestSubject" :placeholder="$t('subjectPlaceholder')" required class="neon-input">
+      <textarea name="requestDescription" :placeholder="$t('requestDescriptionPlaceholder')" required class="neon-textarea"></textarea>
+      <input type="file" name="attachment" accept="image/*" class="neon-file-input" />
+      <button type="submit" class="submit-button neon-button" :disabled="isSubmitting">
+        {{ isSubmitting ? $t('submitting') : $t('submitRequest') }}
+      </button>
     </form>
     <router-link to="/" class="cta-button neon-cta">{{ $t('backToHome') }}</router-link>
   </div>
@@ -21,18 +23,27 @@ export default {
   name: 'SubmitRequest',
   data() {
     return {
-      subject: '',
-      description: ''
-    }
+      email: '',
+      successUrl: `${window.location.origin}/#/success-page`,
+      isSubmitting: false,
+    };
   },
   methods: {
     handleSubmit() {
-      console.log('Request submitted:', this.subject, this.description);
-      this.$router.push('/');
-    }
-  }
-}
+      this.isSubmitting = true;
+      const form = document.getElementById('submitRequestForm');
+      form.submit();
+    },
+  },
+};
 </script>
+
+<style scoped>
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+</style>
 
 <style scoped>
 .submit-request {
@@ -52,6 +63,7 @@ export default {
   text-align: center;
   margin-bottom: 30px;
   background: linear-gradient(45deg, #00f7ff, #ff00e6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -117,5 +129,36 @@ export default {
 .neon-cta:hover {
   background-color: #ff00e6;
   color: #0a0a2a;
+}
+
+.neon-file-input {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 247, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-file-input:hover {
+  box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+}
+
+.neon-file-input::file-selector-button {
+  background-color: #00f7ff;
+  border: none;
+  padding: 10px;
+  color: #0a0a2a;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.neon-file-input::file-selector-button:hover {
+  background-color: #ff00e6;
+  color: #ffffff;
 }
 </style>
