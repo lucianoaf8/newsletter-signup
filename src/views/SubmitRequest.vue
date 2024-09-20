@@ -97,16 +97,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.submit-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Styling for the file input */
-.file-input {
-  margin-top: 1em;
-  /* Add any additional styling you desire */
-}
-</style>

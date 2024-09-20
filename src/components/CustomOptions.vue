@@ -1,17 +1,6 @@
 <!-- src/components/CustomOptions.vue -->
 <template>
     <div class="custom-options">
-      <!-- Email Field -->
-      <input
-        type="email"
-        id="subscribeEmail"
-        name="email"
-        required
-        :placeholder="$t('subscribePlaceholder')"
-        v-model="localEmail"
-        class="neon-input"
-        @input="emitEmail"
-      />
   
       <!-- Location -->
     <div class="preference-card">
@@ -67,17 +56,19 @@
       </div>
   
       <!-- Language Dropdown -->
-      <div class="preference-card location-card">
+      <div class="preference-card">
         <h3>{{ $t('language') }}</h3>
-        <select
-          v-model="localLanguage"
-          class="neon-select language-select"
-          @change="emitLanguage"
-        >
-          <option value="en">{{ $t('languageEnglish') }}</option>
-          <!-- Removed Portuguese option -->
-          <option value="both">{{ $t('languageEnglishPortuguese') }}</option>
-        </select>
+        <div class="language-inputs">
+          <select
+            v-model="localLanguage"
+            class="neon-select language-select"
+            @change="emitLanguage"
+          >
+            <option value="en">{{ $t('languageEnglish') }}</option>
+            <!-- Removed Portuguese option -->
+            <option value="both">{{ $t('languageEnglishPortuguese') }}</option>
+          </select>
+        </div>
       </div>
     </div>
   </template>
