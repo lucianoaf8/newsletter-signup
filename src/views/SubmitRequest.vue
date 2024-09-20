@@ -1,20 +1,42 @@
 <template>
   <div class="submit-request">
     <h2 class="title">{{ $t('submitRequestTitle') }}</h2>
-    <form id="submitRequestForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="handleSubmit" class="request-form">
-      <input type="hidden" name="_subject" value="New Request Submission" />
-      <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_next" :value="successUrl" />
-      <input type="email" id="subscribeEmail" name="email" required :placeholder="$t('subscribePlaceholder')" />
-      <input type="text" name="requestSubject" :placeholder="$t('subjectPlaceholder')" required class="neon-input">
-      <textarea name="requestDescription" :placeholder="$t('requestDescriptionPlaceholder')" required class="neon-textarea"></textarea>
-      <input type="file" name="attachment" accept="image/*" class="neon-file-input" />
-      <button type="submit" class="submit-button neon-button" :disabled="isSubmitting">
+    <form id="submitRequestForm" @submit.prevent="handleRequestSubmit" class="request-form">
+      <input
+        type="email"
+        id="subscribeEmail"
+        name="email"
+        required
+        :placeholder="$t('subscribePlaceholder')"
+        v-model="email"
+        class="neon-input"
+      />
+      <input
+        type="text"
+        name="requestSubject"
+        :placeholder="$t('subjectPlaceholder')"
+        required
+        class="neon-input"
+        v-model="requestSubject"
+      />
+      <textarea
+        name="requestDescription"
+        :placeholder="$t('requestDescriptionPlaceholder')"
+        required
+        class="neon-textarea"
+        v-model="requestDescription"
+      ></textarea>
+      <button
+        type="submit"
+        class="submit-button neon-button"
+        :disabled="isSubmitting"
+      >
         {{ isSubmitting ? $t('submitting') : $t('submitRequest') }}
       </button>
     </form>
-    <router-link to="/" class="cta-button neon-cta">{{ $t('backToHome') }}</router-link>
+    <router-link to="/" class="cta-button cta-home">{{
+      $t('backToHome')
+    }}</router-link>
   </div>
 </template>
 
@@ -23,16 +45,54 @@ export default {
   name: 'SubmitRequest',
   data() {
     return {
-      email: '',
-      successUrl: `${window.location.origin}/#/success-page`,
       isSubmitting: false,
+      email: '',
+      requestSubject: '',
+      requestDescription: '',
+      attachment: null, // To store the selected file
     };
   },
   methods: {
-    handleSubmit() {
+    handleFileUpload(event) {
+      this.attachment = event.target.files[0];
+    },
+    async handleRequestSubmit() {
       this.isSubmitting = true;
-      const form = document.getElementById('submitRequestForm');
-      form.submit();
+      try {
+        const formData = new FormData();
+        formData.append('email', this.email);
+        formData.append('requestSubject', this.requestSubject);
+        formData.append('requestDescription', this.requestDescription);
+        if (this.attachment) {
+          formData.append('attachment', this.attachment);
+        }
+        formData.append('_subject', 'New Request Submission');
+        formData.append('_template', 'table');
+        formData.append('_captcha', 'false');
+
+        const response = await fetch(
+          'https://formsubmit.co/ajax/ae13ee8bbcd4e22acd6e07e9e275bd47',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (response.ok) {
+          // Navigate to success page
+          this.$router.push('/success-page');
+        } else {
+          // Handle submission error
+          const errorText = await response.text();
+          console.error('Form submission failed:', errorText);
+          alert('Form submission failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        alert('An error occurred while submitting the form. Please try again.');
+      } finally {
+        this.isSubmitting = false;
+      }
     },
   },
 };
@@ -43,122 +103,10 @@ export default {
   opacity: 0.7;
   cursor: not-allowed;
 }
-</style>
 
-<style scoped>
-.submit-request {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0, 247, 255, 0.2);
-  color: #ffffff;
-  font-family: 'Rajdhani', sans-serif;
-}
-
-.title {
-  font-size: 3rem;
-  text-align: center;
-  margin-bottom: 30px;
-  background: linear-gradient(45deg, #00f7ff, #ff00e6);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.request-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.neon-input, .neon-textarea {
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #ffffff;
-  border-radius: 5px;
-  font-size: 1rem;
-  box-shadow: 0 0 5px rgba(0, 247, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.neon-input:focus, .neon-textarea:focus {
-  box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
-}
-
-.neon-textarea {
-  resize: vertical;
-  min-height: 150px;
-}
-
-.submit-button {
-  padding: 15px;
-  background-color: transparent;
-  border: 2px solid #00f7ff;
-  color: #00f7ff;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 5px;
-}
-
-.submit-button:hover {
-  background-color: #00f7ff;
-  color: #0a0a2a;
-  box-shadow: 0 10px 20px rgba(0, 247, 255, 0.3);
-}
-
-.cta-button {
-  text-align: center;
-  display: block;
-  margin-top: 20px;
-}
-
-.neon-cta {
-  padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.neon-cta:hover {
-  background-color: #ff00e6;
-  color: #0a0a2a;
-}
-
-.neon-file-input {
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #ffffff;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(0, 247, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.neon-file-input:hover {
-  box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
-}
-
-.neon-file-input::file-selector-button {
-  background-color: #00f7ff;
-  border: none;
-  padding: 10px;
-  color: #0a0a2a;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.neon-file-input::file-selector-button:hover {
-  background-color: #ff00e6;
-  color: #ffffff;
+/* Styling for the file input */
+.file-input {
+  margin-top: 1em;
+  /* Add any additional styling you desire */
 }
 </style>

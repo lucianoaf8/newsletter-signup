@@ -7,7 +7,7 @@
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_next" :value="successUrl" />
-      <button type="submit" class="submitButton" :disabled="isSubmitting">
+      <button type="submit" class="submit-button" :disabled="isSubmitting">
         {{ isSubmitting ? $t('submitting') : $t('subscribeButton') }}
       </button>
     </form>
@@ -36,10 +36,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.submitButton:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-</style>

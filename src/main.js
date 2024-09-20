@@ -68,6 +68,12 @@ const messages = {
     unsubscribeSuccessTitle: 'Unsubscribe Successful',
     unsubscribeSuccessMessage: 'We\'re sorry to see you go!',
     submitting: 'Submitting...',
+    successTitle: 'Success!',
+    successMessage: 'Your form has been submitted successfully.',
+    cityPlaceholder: "Enter your city",
+    countryPlaceholder: "Enter your country",
+    languageEnglishPortuguese: "English & Portuguese",
+    location: "Location",
   },
   pt: {
     title: 'Boletim Luca',
@@ -132,6 +138,12 @@ const messages = {
     unsubscribeSuccessTitle: 'Cancelamento de inscrição bem-sucedido',
     unsubscribeSuccessMessage: 'Lamentamos vê-lo partir!',
     submitting: 'Enviando...',
+    successTitle: 'Sucesso!',
+    successMessage: 'Seu formulário foi enviado com sucesso.',
+    cityPlaceholder: "Informe sua cidade",
+    countryPlaceholder: "Informe seu país",
+    languageEnglishPortuguese: "Inglês & Português",
+    location: "Localização"
   }
 }
 

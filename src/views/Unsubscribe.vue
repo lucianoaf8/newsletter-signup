@@ -8,7 +8,7 @@
       <input type="hidden" name="_captcha" value="false" />
       <!-- Keep _next for FormSubmit redirection -->
       <input type="hidden" name="_next" :value="successUrl" />
-      <button type="submit" class="submitButton" :disabled="isSubmitting">
+      <button type="submit" class="submit-button submit-unsubscribe" :disabled="isSubmitting">
         {{ isSubmitting ? $t('submitting') : $t('unsubscribeButton') }}
       </button>
     </form>
@@ -38,10 +38,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.submitButton:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-</style>

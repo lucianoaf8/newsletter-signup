@@ -1,20 +1,38 @@
+<!-- src/views/EditPreferences.vue -->
 <template>
   <div class="edit-preferences">
     <h2 class="title">{{ $t('editPreferencesTitle') }}</h2>
-    <form id="editPreferencesForm" action="https://formsubmit.co/ae13ee8bbcd4e22acd6e07e9e275bd47" method="POST" @submit.prevent="handleSubmit" class="preferences-form">
-      <input type="hidden" name="_subject" value="Edit Preferences Request" />
-      <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_next" :value="successUrl" />
-      <input type="email" id="subscribeEmail" name="email" required :placeholder="$t('subscribePlaceholder')" />
+    <form id="editPreferencesForm" @submit.prevent="handleSubmit" class="preferences-form">
       
+      <!-- Custom Options Component -->
+      <CustomOptions
+        :email="email"
+        :city="city"
+        :country="country"
+        :interests="preferences.interests"
+        :language="preferences.language"
+        @update:email="email = $event"
+        @update:city="city = $event"
+        @update:country="country = $event"
+        @update:interests="updateInterests($event)"
+        @update:language="preferences.language = $event"
+      />
+
       <!-- Newsletter Sections -->
       <div class="preference-card">
         <h3>{{ $t('newsletterSections') }}</h3>
         <div class="preferences-grid">
-          <div v-for="section in sections" :key="section" class="preference-option">
+          <div
+            v-for="section in sectionsList"
+            :key="section"
+            class="preference-option"
+          >
             <label>
-              <input type="checkbox" v-model="preferences.sections[section]" class="neon-checkbox">
+              <input
+                type="checkbox"
+                v-model="sections[section]"
+                class="neon-checkbox"
+              />
               <span class="label-text">{{ $t(section) }}</span>
             </label>
           </div>
@@ -25,39 +43,31 @@
       <div class="preference-card">
         <h3>{{ $t('deliveryDays') }}</h3>
         <div class="preferences-grid">
-          <div v-for="day in days" :key="day" class="preference-option">
+          <div
+            v-for="day in daysList"
+            :key="day"
+            class="preference-option"
+          >
             <label>
-              <input type="checkbox" v-model="preferences.days[day]" class="neon-checkbox">
+              <input
+                type="checkbox"
+                v-model="days[day]"
+                class="neon-checkbox"
+              />
               <span class="label-text">{{ $t(day) }}</span>
             </label>
           </div>
         </div>
       </div>
 
-      <!-- Interests -->
-      <div class="preference-card">
-        <h3>{{ $t('interests') }}</h3>
-        <div class="interest-inputs">
-          <input type="text" v-model="preferences.interests[0]" :placeholder="$t('interest1Placeholder')" class="neon-input">
-          <input type="text" v-model="preferences.interests[1]" :placeholder="$t('interest2Placeholder')" class="neon-input">
-          <input type="text" v-model="preferences.interests[2]" :placeholder="$t('interest3Placeholder')" class="neon-input">
-        </div>
-      </div>
-
-      <!-- Language -->
-      <div class="preference-card">
-        <h3>{{ $t('language') }}</h3>
-        <select v-model="preferences.language" class="neon-select">
-          <option value="en">{{ $t('languageEnglish') }}</option>
-          <option value="pt">{{ $t('languagePortuguese') }}</option>
-          <option value="both">{{ $t('languageBoth') }}</option>
-        </select>
-      </div>
-
-      <input type="hidden" name="sections" :value="JSON.stringify(preferences.sections)" />
-      <input type="hidden" name="days" :value="JSON.stringify(preferences.days)" />
+      <!-- Hidden Inputs for Form Submission -->
+      <input type="hidden" name="sections" :value="JSON.stringify(sections)" />
+      <input type="hidden" name="days" :value="JSON.stringify(days)" />
       <input type="hidden" name="interests" :value="preferences.interests.join(', ')" />
       <input type="hidden" name="language" :value="preferences.language" />
+      <input type="hidden" name="email" :value="email" />
+      <input type="hidden" name="city" :value="city" />
+      <input type="hidden" name="country" :value="country" />
 
       <!-- Submit Button -->
       <button type="submit" class="submit-button neon-button" :disabled="isSubmitting">
@@ -65,149 +75,118 @@
       </button>
     </form>
 
-    <router-link to="/" class="cta-button neon-cta">{{ $t('backToHome') }}</router-link>
+    <router-link to="/" class="cta-button cta-home">{{ $t('backToHome') }}</router-link>
   </div>
 </template>
 
 <script>
+import CustomOptions from '@/components/CustomOptions.vue';
+
 export default {
   name: 'EditPreferences',
+  components: {
+    CustomOptions
+  },
   data() {
+    // Define the list of sections and days
+    const sectionsList = [
+      'weather',
+      'exchangeRates',
+      'quoteOfTheDay',
+      'funFact',
+      'englishWithLuca',
+      'onThisDay',
+      'breathingBox',
+      'dailyChallenge'
+    ];
+
+    const daysList = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday'
+    ];
+
+    // Initialize sections and days with all options set to false
+    const sections = {};
+    sectionsList.forEach(section => {
+      sections[section] = true;
+    });
+
+    const days = {};
+    daysList.forEach(day => {
+      days[day] = true;
+    });
+
     return {
-      sections: ['weather', 'exchangeRates', 'quoteOfTheDay', 'funFact', 'englishWithLuca', 'onThisDay', 'breathingBox', 'dailyChallenge'],
-      days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+      email: '',
+      city: '',
+      country: '',
+      sectionsList,
+      daysList,
+      sections,
+      days,
       preferences: {
-        sections: {},
-        days: {},
         interests: ['', '', ''],
         language: 'en',
-        
       },
-      successUrl: `${window.location.origin}/#/success-page`,
       isSubmitting: false,
-    }
+    };
   },
   methods: {
-    handleSubmit() {
+    updateInterests(newInterests) {
+      console.log('Updating interests:', newInterests);
+      this.preferences.interests = newInterests;
+    },
+    async handleSubmit() {
       this.isSubmitting = true;
-      const form = document.getElementById('editPreferencesForm');
-      form.submit();
+      console.log('Submitting form with:', {
+        email: this.email,
+        city: this.city,
+        country: this.country,
+        sections: this.sections,
+        days: this.days,
+        interests: this.preferences.interests,
+        language: this.preferences.language
+      });
+
+      try {
+        const formData = new FormData();
+        formData.append('email', this.email);
+        formData.append('city', this.city);
+        formData.append('country', this.country);
+        formData.append('sections', JSON.stringify(this.sections));
+        formData.append('days', JSON.stringify(this.days));
+        formData.append('interests', this.preferences.interests.join(', '));
+        formData.append('language', this.preferences.language);
+        formData.append('_subject', 'Edit Preferences Request');
+        formData.append('_template', 'table');
+        formData.append('_captcha', 'false');
+
+        const response = await fetch('https://formsubmit.co/ajax/ae13ee8bbcd4e22acd6e07e9e275bd47', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          // Navigate to success page
+          this.$router.push('/success-page');
+        } else {
+          // Handle submission error
+          const errorText = await response.text();
+          console.error('Form submission failed:', errorText);
+          alert('Form submission failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        alert('An error occurred while submitting the form. Please try again.');
+      } finally {
+        this.isSubmitting = false;
+      }
     },
   },
-}
+};
 </script>
-
-<style scoped>
-.submit-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-</style>
-
-
-<style scoped>
-.edit-preferences {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0, 247, 255, 0.2);
-  color: #ffffff;
-  font-family: 'Rajdhani', sans-serif;
-}
-
-.title {
-  font-size: 3rem;
-  text-align: center;
-  margin-bottom: 30px;
-  background: linear-gradient(45deg, #00f7ff, #ff00e6);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.preferences-form {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-
-.preference-card {
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-}
-
-.preferences-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.preference-option {
-  display: flex;
-  align-items: center;
-}
-
-.neon-checkbox {
-  margin-right: 10px;
-}
-
-.label-text {
-  font-size: 1.2rem;
-}
-
-.neon-input, .neon-select {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  box-shadow: 0 0 5px rgba(0, 247, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.neon-input:focus, .neon-select:focus {
-  box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
-}
-
-.submit-button {
-  padding: 15px;
-  background-color: transparent;
-  border: 2px solid #00f7ff;
-  color: #00f7ff;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 5px;
-}
-
-.submit-button:hover {
-  background-color: #00f7ff;
-  color: #0a0a2a;
-  box-shadow: 0 10px 20px rgba(0, 247, 255, 0.3);
-}
-
-.cta-button {
-  text-align: center;
-  display: block;
-  margin-top: 20px;
-}
-
-.neon-cta {
-  padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.neon-cta:hover {
-  background-color: #ff00e6;
-  color: #0a0a2a;
-}
-</style>
